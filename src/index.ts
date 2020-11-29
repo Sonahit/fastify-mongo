@@ -28,5 +28,6 @@ fastify
     url: 'mongodb://root:root@127.0.0.1:27017/',
   })
   .register(db)
-  .ready(() => console.log('Loaded plugins'));
+  .then(() => fastify.log.info(`Connected to ${fastify.db.databaseName}`));
+fastify.ready(() => fastify.log.info('Loaded plugins'));
 fastify.listen(port, () => fastify.log.info(`Started listening at http://127.0.0.1:${port}`));
