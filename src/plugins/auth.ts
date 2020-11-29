@@ -6,11 +6,7 @@ import { parseToken } from '../utils/strings';
 const auth = (fastify: FastifyInstance, _: Record<string, any>, done: Function) => {
   fastify.decorate('auth', (req: FastifyRequest, rep: FastifyReply) => {
     const token = parseToken(req.headers.authorization);
-    if (!token) {
-      const code = 401;
-      rep.code(code);
-      throw new httpErrors[code]('Not authorized');
-    }
+    if (!token) rep.code(401).send(new httpErrors.Unauthorized('Not authorized'));
   });
   done();
 };
