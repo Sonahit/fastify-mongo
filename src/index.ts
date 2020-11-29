@@ -1,6 +1,7 @@
 import Fastify from 'fastify';
 import fmongo from 'fastify-mongodb';
 import config from './plugins/config';
+import db from './plugins/db';
 import logger from './plugins/logger';
 import sequence from './plugins/sequence';
 import routes from './routes';
@@ -26,6 +27,6 @@ fastify
   .register(fmongo, {
     url: 'mongodb://root:root@127.0.0.1:27017/',
   })
+  .register(db)
   .ready(() => console.log('Loaded plugins'));
-
-fastify.listen(port, () => console.log(`Started listening at http://127.0.0.1:${port}`));
+fastify.listen(port, () => fastify.log.info(`Started listening at http://127.0.0.1:${port}`));

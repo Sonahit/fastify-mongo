@@ -1,7 +1,7 @@
 import { FastifyInstance } from 'fastify';
-import { User } from '../../database/models';
 import schemas from './schemas';
 import httpErrors from 'http-errors';
+import { CollectionSchemas } from '../../typings';
 
 export default (fastify: FastifyInstance) =>
   schemas(fastify).register(
@@ -33,8 +33,7 @@ export default (fastify: FastifyInstance) =>
               query: { id, name },
             } = req;
 
-            const db = fastify.mongo.client.db('test');
-            const usersCollection = db.collection<User>('users');
+            const usersCollection = fastify.db.collection<CollectionSchemas['users']>('users');
             const user = await usersCollection.findOne(id && name ? { id, name } : id ? { id } : name ? { name } : {});
 
             if (user) {
@@ -64,8 +63,7 @@ export default (fastify: FastifyInstance) =>
               params: { id },
             } = req;
 
-            const db = fastify.mongo.client.db('test');
-            const usersCollection = db.collection<User>('users');
+            const usersCollection = fastify.db.collection<CollectionSchemas['users']>('users');
             const user = await usersCollection.findOne({ id: +id });
             if (!user) {
               rep.code(400).send(new httpErrors.BadRequest('Пользователь не существует'));
@@ -91,8 +89,7 @@ export default (fastify: FastifyInstance) =>
                 body: { name },
               } = req;
 
-              const db = fastify.mongo.client.db('test');
-              const usersCollection = db.collection<User>('users');
+              const usersCollection = fastify.db.collection<CollectionSchemas['users']>('users');
               const user = await usersCollection.findOne({ name });
               if (user) {
                 rep.status(400).send(new httpErrors.BadRequest('Пользователь уже существует'));
@@ -104,8 +101,7 @@ export default (fastify: FastifyInstance) =>
               body: { name },
             } = req;
 
-            const db = fastify.mongo.client.db('test');
-            const usersCollection = db.collection<User>('users');
+            const usersCollection = fastify.db.collection<CollectionSchemas['users']>('users');
             const user = {
               id: await fastify.sequence('userId'),
               name,

@@ -1,7 +1,8 @@
-import { Collection } from 'mongodb';
-import { User, Sequence, Token } from '../database/models/index';
+import { Collection, Db } from 'mongodb';
+import { User, Sequence, Token, Category } from '../database/models/index';
 
 export interface CollectionSchemas {
+  categories: Category;
   sequences: Sequence;
   users: User;
   tokens: Token;
@@ -14,6 +15,8 @@ declare module 'fastify' {
     sequence: (name: SequenceNames) => Promise<number>;
     config: {
       key: string;
+      db: string;
     };
+    db: Db;
   }
 }
