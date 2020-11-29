@@ -1,7 +1,7 @@
 import { FastifyInstance } from 'fastify';
 import fp from 'fastify-plugin';
 
-const sequence = (fastify: FastifyInstance, _: Record<string, any>, done: Function) => {
+const config = (fastify: FastifyInstance, _: Record<string, any>, done: Function) => {
   fastify.decorate('config', {
     key: 'secret_key',
     db: 'test',
@@ -9,6 +9,6 @@ const sequence = (fastify: FastifyInstance, _: Record<string, any>, done: Functi
   done();
 };
 
-export default fp(sequence, {
+export default fp(config, {
   name: 'config',
 });

@@ -1,4 +1,5 @@
 import { FastifyInstance } from 'fastify';
+import fastifyMongodb from 'fastify-mongodb';
 import fp from 'fastify-plugin';
 
 const db = (fastify: FastifyInstance, _: Record<string, any>, done: Function) => {
@@ -8,5 +9,5 @@ const db = (fastify: FastifyInstance, _: Record<string, any>, done: Function) =>
 
 export default fp(db, {
   name: 'db',
-  dependencies: ['config', 'fastify-mongodb'],
+  dependencies: ['config', fastifyMongodb.name],
 });
