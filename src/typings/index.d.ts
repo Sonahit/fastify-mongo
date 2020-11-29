@@ -1,4 +1,5 @@
 import { Collection, Db } from 'mongodb';
+import { Article } from '../database/models/Article';
 import { User, Sequence, Token, Category } from '../database/models/index';
 
 export interface CollectionSchemas {
@@ -6,9 +7,10 @@ export interface CollectionSchemas {
   sequences: Sequence;
   users: User;
   tokens: Token;
+  articles: Article;
 }
 
-export type SequenceNames = 'userId';
+export type SequenceNames = 'userId' | 'categoryId' | 'articleId';
 
 declare module 'fastify' {
   export interface FastifyInstance {
