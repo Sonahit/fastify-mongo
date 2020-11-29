@@ -17,7 +17,7 @@ const fastify = Fastify({
   },
 });
 
-const { port = 3000 } = process.env;
+const { port = 3000, DB_USER = 'root', DB_PASS = 'root' } = process.env;
 
 fastify
   .register(logger)
@@ -25,7 +25,7 @@ fastify
   .register(sequence)
   .register(routes)
   .register(fmongo, {
-    url: 'mongodb://root:root@127.0.0.1:27017/',
+    url: `mongodb://${DB_USER}:${DB_PASS}@127.0.0.1:27017/`,
   })
   .register(db)
   .then(() => fastify.log.info(`Connected to ${fastify.db.databaseName}`));
