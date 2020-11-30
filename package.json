@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "ajv-errors": "^1.0.1",
+    "dotenv": "^8.2.0",
     "fastify": "^3.8.0",
     "fastify-mongodb": "^2.0.1",
     "fastify-plugin": "^3.0.0",

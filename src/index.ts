@@ -2,6 +2,7 @@ import Fastify from 'fastify';
 import fmongo from 'fastify-mongodb';
 import config from './plugins/config';
 import db from './plugins/db';
+import env from './plugins/env';
 import logger from './plugins/logger';
 import sequence from './plugins/sequence';
 import routes from './routes';
@@ -17,17 +18,14 @@ const fastify = Fastify({
   },
 });
 
-const { port = 3000, DB_USER = 'root', DB_PASS = 'root' } = process.env;
-
 fastify
+  .register(env)
   .register(logger)
   .register(config)
   .register(sequence)
-  .register(routes)
-  .register(fmongo, {
-    url: `mongodb://${DB_USER}:${DB_PASS}@127.0.0.1:27017/`,
-  })
   .register(db)
-  .then(() => fastify.log.info(`Connected to ${fastify.db.databaseName}`));
-fastify.ready(() => fastify.log.info('Loaded plugins'));
-fastify.listen(port, () => fastify.log.info(`Started listening at http://127.0.0.1:${port}`));
+  .register(routes)
+  .ready(() => fastify.log.info('Loaded plugins'));
+fastify.listen(process.env.port || 3000, () =>
+  fastify.log.info(`Started listening at http://127.0.0.1:${process.env.port || 3000}`),
+);

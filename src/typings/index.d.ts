@@ -20,5 +20,6 @@ declare module 'fastify' {
       db: string;
     };
     db: Db;
+    env: Record<string, string>;
   }
 }
