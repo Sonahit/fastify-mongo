@@ -5,7 +5,6 @@ import knex from 'knex';
 import fp from 'fastify-plugin';
 
 type TConfig = Omit<Config & { connection: PgConnectionConfig }, 'client'>;
-let isConnected = false;
 const db = async <T extends boolean>(
   fastify: FastifyInstance,
   options: {
@@ -26,10 +25,7 @@ const db = async <T extends boolean>(
       client: 'pg',
       pool: {
         afterCreate: function (conn: Client, dn: Function) {
-          if (!isConnected) {
-            isConnected = true;
-            fastify.log.info('Connected to db');
-          }
+          fastify.log.info(`Performing query to ${conn.database}`);
           dn();
         },
       },
