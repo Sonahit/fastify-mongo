@@ -44,13 +44,14 @@ export default (fastify: FastifyInstance) =>
           const {
             body: { name },
           } = req;
-          const users = fastify.knex.from('users');
           const tokens = fastify.knex.from('tokens');
           const token = crypto.createHmac('sha256', fastify.config.key).update(name).digest('hex');
 
-          await tokens.insert({
-            token,
-          });
+          await tokens
+            .insert({
+              token,
+            })
+            .into('tokens');
 
           return token;
         },
