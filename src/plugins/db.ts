@@ -13,7 +13,6 @@ const db = async <T extends boolean>(
     sync: boolean;
     config: T extends true ? TConfig & { connection: Function } : TConfig;
   },
-  done: Function,
 ) => {
   const opts = options.async
     ? { ...options.config, connection: (options.config.connection as Function)() }
@@ -31,6 +30,7 @@ const db = async <T extends boolean>(
       },
     }),
   );
+  fastify.log.info(`Loaded db plugin`);
 };
 
 export default fp(db, {
