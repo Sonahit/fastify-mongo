@@ -102,7 +102,7 @@ export default (fastify: FastifyInstance) =>
               body: { name },
             } = req;
 
-            const user = await this.knex.insert({ name }).into('users').returning(['id', 'name']);
+            const user = (await this.knex('users').insert({ name }).returning(['id', 'name']))[0];
 
             return user;
           },
