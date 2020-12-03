@@ -1,25 +1,23 @@
-import { Collection, Db } from 'mongodb';
-import { Article } from '../database/models/Article';
-import { User, Sequence, Token, Category } from '../database/models/index';
+import Knex from 'knex';
+import { Tables } from 'knex/types/tables';
 
-export interface CollectionSchemas {
-  categories: Category;
-  sequences: Sequence;
-  users: User;
-  tokens: Token;
-  articles: Article;
+import { Category, Token, User, Article } from '../database/models';
+
+declare module 'knex' {
+  export interface Tables {
+    users: User;
+    categories: Category;
+    articles: Article;
+    tokens: Token;
+  }
 }
-
-export type SequenceNames = 'userId' | 'categoryId' | 'articleId';
 
 declare module 'fastify' {
   export interface FastifyInstance {
-    sequence: (name: SequenceNames) => Promise<number>;
+    knex: Knex<Tables>;
+    env: Record<string, string>;
     config: {
       key: string;
-      db: string;
     };
-    db: Db;
-    env: Record<string, string>;
   }
 }

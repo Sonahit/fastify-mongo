@@ -1,11 +1,9 @@
 version: '3.8'
 services:
   db:
-    image: mongo:4.2-bionic
+    image: postgres:10.14
     restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: root
-      MONGO_INITDB_DATABASE: test
+      POSTGRES_PASSWORD: postgres
     ports:
-      - 27017:27017
+      - 5656:5432

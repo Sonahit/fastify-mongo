@@ -1,7 +1,6 @@
 import { FastifyInstance } from 'fastify';
 import schemas from './schemas';
 import httpErrors from 'http-errors';
-import { CollectionSchemas } from '../../typings';
 
 export default (fastify: FastifyInstance) =>
   schemas(fastify).register(
@@ -28,13 +27,13 @@ export default (fastify: FastifyInstance) =>
               },
             },
           },
-          async (req, rep) => {
+          async function (req, rep) {
             const {
               query: { id, name },
             } = req;
 
-            const usersCollection = fastify.db.collection<CollectionSchemas['users']>('users');
-            const user = await usersCollection.findOne(id && name ? { id, name } : id ? { id } : name ? { name } : {});
+            const users = this.knex.from('users');
+            const user = await users.andWhere(id && name ? { id, name } : id ? { id } : name ? { name } : {}).first();
 
             if (user) {
               return user;
@@ -58,16 +57,18 @@ export default (fastify: FastifyInstance) =>
               },
             },
           },
-          async (req, rep) => {
+          async function (req, rep) {
             const {
               params: { id },
             } = req;
 
-            const usersCollection = fastify.db.collection<CollectionSchemas['users']>('users');
-            const user = await usersCollection.findOne({ id: +id });
+            const users = fastify.knex.from('users');
+            const user = await users.where({ id: +id }).first();
+
             if (!user) {
               rep.code(400).send(new httpErrors.BadRequest('Пользователь не существует'));
             }
+
             rep.code(200).send(user);
           },
         )
@@ -84,29 +85,24 @@ export default (fastify: FastifyInstance) =>
                 $ref: 'user#',
               },
             },
-            preHandler: async (req, rep) => {
+            preHandler: async function (req, rep) {
               const {
                 body: { name },
               } = req;
 
-              const usersCollection = fastify.db.collection<CollectionSchemas['users']>('users');
-              const user = await usersCollection.findOne({ name });
+              const users = fastify.knex.from('users');
+              const user = await users.where({ name }).first();
               if (user) {
                 rep.status(400).send(new httpErrors.BadRequest('Пользователь уже существует'));
               }
             },
           },
-          async (req) => {
+          async function (req) {
             const {
               body: { name },
             } = req;
 
-            const usersCollection = fastify.db.collection<CollectionSchemas['users']>('users');
-            const user = {
-              id: await fastify.sequence('userId'),
-              name,
-            };
-            await usersCollection.insertOne(user);
+            const user = await this.knex.insert({ name }).into('users').returning(['id', 'name']);
 
             return user;
           },

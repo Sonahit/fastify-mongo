@@ -1,5 +1,4 @@
 import { FastifyInstance } from 'fastify';
-import { CollectionSchemas } from '../../typings';
 import httpErrors from 'http-errors';
 import crypto from 'crypto';
 
@@ -32,9 +31,8 @@ export default (fastify: FastifyInstance) =>
           preHandler: async (req, rep) => {
             const { name } = req.body;
 
-            const db = fastify.mongo.client.db('test');
-            const usersCollection = db.collection<CollectionSchemas['users']>('users');
-            const user = await usersCollection.findOne({ name });
+            const users = fastify.knex.from('users');
+            const user = await users.where({ name }).first();
 
             if (!user) {
               rep.status(400);
@@ -46,11 +44,11 @@ export default (fastify: FastifyInstance) =>
           const {
             body: { name },
           } = req;
-          const db = fastify.mongo.client.db('test');
-          const tokenCol = db.collection<CollectionSchemas['tokens']>('tokens');
+          const users = fastify.knex.from('users');
+          const tokens = fastify.knex.from('tokens');
           const token = crypto.createHmac('sha256', fastify.config.key).update(name).digest('hex');
 
-          await tokenCol.insertOne({
+          await tokens.insert({
             token,
           });
 
