@@ -30,6 +30,7 @@ const db = async <T extends boolean>(
       },
     }),
   );
+  await fastify.knex.raw('select 1');
   fastify.log.info(`Loaded db plugin`);
 };
 
